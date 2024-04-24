@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>emoji project</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&display=swap" rel="stylesheet">
+
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="wrapper">
+        <div id="emoji-search">
+            <h1>Emojee - Emoji 🔍 Application</h1><hr>
+            <form action="">
+                <input type="text" placeholder="Emoji Search" />
+                <button type="submit">Search</button>
+            </form>
+        </div>
+        <div class="results">
+          
+        </div>
+    </div>
+    <script src="emojiList.js"></script>
+    <script>
+        const resultsDiv = document.querySelector(".results");
+
+        window.addEventListener("load", () => {
+        createList(emojiList)
+        attachListener();
+        } );
+
+        function createList(inputList) {
+            inputList.forEach((emoji) => {
+                const parent = document.createElement("div");
+                parent.classList.add("parent");
+
+                const em = document.createElement("span");
+                em.classList.add("emoji-img");
+                em.innerText = emoji.emoji;
+                parent.append(em);
+
+                const alias = document.createElement("span");
+                const newAlias = emoji.aliases.map((alias) => alias.replaceAll("_", " "));
+                alias.classList.add("alias");
+                alias.innerText = newAlias.join();
+                parent.append(alias);
+
+                const desc = document.createElement("span");
+                desc.classList.add("emoji");
+                desc.innerText = emoji.description;
+                parent.append(desc);
+
+                resultsDiv.append(parent);
+                
+            });
+        }
+
+        function attachListener() {
+            const input = document.querySelector("input");
+            input.addEventListener("keyup", filterEmojis);
+        }
+
+        function filterEmojis(e) {
+            const keyword = e.target.value;
+
+            const filteredData = emojiList.filter((emoji) => {
+                if (emoji.description.includes(keyword)) return emoji;
+                else if (emoji.category.includes(keyword)) return emoji;
+                else if (emoji.aliases.includes(keyword)) return emoji;
+                else if (emoji.tags.includes(keyword)) return emoji;
+            });
+
+            //resetting previous data in the div
+            resultsDiv.innerText = "";
+            createList(filteredData)
+        }
+    </script>
+</body>
+</html>
